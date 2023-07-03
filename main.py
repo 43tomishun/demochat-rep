@@ -55,7 +55,7 @@ def handle_message(event):
             amount = int(amount)
             a_value = a_value - amount
             b_value = b_value + amount
-            reply_text = f"aの残高は{a_value}です。bの残高は{b_value}です。"
+            reply_text = f"aの残高は{a_value}です。bの残高は{b_value}です。あほ"
 
             line_bot_api.reply_message(
                 event.reply_token,
