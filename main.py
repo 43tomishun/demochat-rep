@@ -11,6 +11,8 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 import os
+import logging 
+import re
 
 app = Flask(__name__)
 
@@ -38,13 +40,48 @@ def callback():
 
     return 'OK'
 
+a_value = 0 
+b_value = 0
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
 
+    global a_value
+    global b_value
+    message_text = event.message.text
+    if '@tip' in message_text:
+        if 'from@a' in message_text:
+            amount = re.sub(r"\D", "", message_text)
+            amount = int(amount)
+            a_value = a_value - amount
+            b_value = b_value + amount
+            reply_text = f"aの残高は{a_value}です。bの残高は{b_value}です。"
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply_text)
+            )
+        
+        elif 'from@b' in message_text:
+            amount = re.sub(r"\D", "", message_text)
+            amount = int(amount)
+            a_value = a_value + amount
+            b_value = b_value - amount
+            reply_text = f"aの残高は{a_value}です。bの残高は{b_value}です。"
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply_text)
+            )
+
+        else :
+            reply_text = f"aの残高は{a_value}です。bの残高は{b_value}です。"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply_text)
+            )
+    else:
+        pass
 
 if __name__ == "__main__":
 #    app.run()
